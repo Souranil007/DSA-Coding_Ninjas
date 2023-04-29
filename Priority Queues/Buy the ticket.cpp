@@ -1,0 +1,67 @@
+// You want to buy a ticket for a well-known concert which is happening in your city. But the number of tickets available is limited. Hence the sponsors of the concert decided to sell tickets to customers based on some priority.
+// A queue is maintained for buying the tickets and every person is attached with a priority (an integer, 1 being the lowest priority).
+// The tickets are sold in the following manner -
+// 1. The first person (pi) in the queue requests for the ticket.
+// 2. If there is another person present in the queue who has higher priority than pi, then ask pi to move at end of the queue without giving him the ticket.
+// 3. Otherwise, give him the ticket (and don't make him stand in queue again).
+// Giving a ticket to a person takes exactly 1 second and it takes no time for removing and adding a person to the queue. And you can assume that no new person joins the queue.
+// Given a list of priorities of N persons standing in the queue and the index of your priority (indexing starts from 0). Find and return the time it will take until you get the ticket.
+// Input Format:
+// The first line of input contains an integer, that denotes the value of total number of people standing in queue or the size of the array of priorities. Let us denote it with the symbol N.
+// The following line contains N space separated integers, that denote the value of the elements of the array of priorities.
+// The following contains an integer, that denotes the value of index of your priority. Let us denote it with symbol k.
+// Output Format :
+// The first and only line of output contains the time required for you to get the ticket.
+// Constraints:
+// Time Limit: 1 sec
+
+
+#include <queue>
+int buyTicket(int *arr, int n, int k)
+{
+    // Write your code here
+    deque<int> dq;
+    priority_queue<int> pq;
+    int yourPriority = arr[k];
+    int time = 1;
+    for (int i = 0; i < n; i++)
+    {
+        if (i == k)
+            dq.push_back(-1);
+        else
+            dq.push_back(arr[i]);
+        pq.push(arr[i]);
+    }
+    if (yourPriority == pq.top())
+    {
+        for (int i = 0; i < n; i++)
+        {
+            if (dq[i] == pq.top())
+                time++;
+            else if (dq[i] == -1)
+                return time;
+        }
+    }
+    while (pq.top() > yourPriority || dq.front() != -1)
+    {
+        if (yourPriority == pq.top())
+        {
+            for (int i = 0; i < dq.size(); i++)
+            {
+                if (dq[i] == pq.top())
+                    time++;
+                else if (dq[i] == -1)
+                    return time;
+            }
+        }
+        while (dq.front() != pq.top())
+        {
+            dq.push_back(dq.front());
+            dq.pop_front();
+        }
+        time++;
+        dq.pop_front();
+        pq.pop();
+    }
+    return time;
+}
